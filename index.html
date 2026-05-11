@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>MENU Atendimento</title>
+    <style>
+        /* Fundo com imagem */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            background: url('https://iptvperfeito.com/menu/fundo-novo.jpg') no-repeat center center/cover;
+            z-index: -2;
+        }
+
+        /* Barra de aviso */
+        .aviso-bar {
+            background-color: #8B008B;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .close-btn {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 10px;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            height: 82vh;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background: #4B0082;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+        }
+
+        /* Barra de progresso */
+        .progress-container {
+            width: 80%;
+            height: 20px;
+            background-color: #FF0000;
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: 0 0 10px #000;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background-color: #00ff88;
+            transition: width 1s linear;
+        }
+
+        marquee {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        /* === BOTÕES COMPACTOS + EMOJIS VISÍVEIS === */
+        .btn-compact {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 300px;
+            padding: 12px 18px;
+            margin: 6px auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1E3A8A, #0D6EFD);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(13, 110, 253, 0.25);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-compact span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-compact:hover {
+            background: linear-gradient(135deg, #1E40AF, #2563EB);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-compact:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+        }
+
+        .btn-compact::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            z-index: 0;
+        }
+
+        .btn-compact:active::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        /* Botão piscante */
+        .btn-piscante {
+            background: linear-gradient(135deg, #0DA6FF, #0077CC);
+            box-shadow: 0 0 15px rgba(13, 166, 255, 0.5);
+            animation: piscar-suave 1.8s infinite ease-in-out;
+            font-weight: 700;
+        }
+
+        @keyframes piscar-suave {
+            0%, 100% { opacity: 1; box-shadow: 0 0 15px rgba(13, 166, 255, 0.5); }
+            50% { opacity: 0.85; box-shadow: 0 0 22px rgba(13, 166, 255, 0.7); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .btn-compact {
+                font-size: 16px;
+                padding: 11px 16px;
+                gap: 6px;
+            }
+            .btn-compact span { gap: 6px; }
+        }
+
+        /* Popups */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.85);
+        }
+        .modal-content {
+            background: url('https://iptvperfeito.com/menu/fundo-novo.jpg') no-repeat center center;
+            background-size: cover;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            color: #fff;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 0px;
+            right: 45px;
+            color: #FF0000;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .tabela {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        .plano {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 10px;
+            border-radius: 12px;
+            min-width: 250px;
+            max-width: 300px;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .plano:hover {
+            transform: scale(1.05);
+        }
+        .plano h2 {
+            color: #00aaff;
+            margin-bottom: 10px;
+        }
+        .planos {
+            color: #00aaff;
+            margin-bottom: 20px;
+        }
+        .plano p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        .observacao {
+            margin-top: 30px;
+            font-size: 1rem;
+            color: #ddd;
+        }
+        @media (max-width: 768px) {
+            .tabela {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        🔥 Oferta Especial: Um ano de IPTV ou CS por apenas R$ 69,90! Vagas Limitadas! 🔥
+        <br><br>
+        Promoção encerra em... <div id="countdown">Carregando...</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <script>
+            const countdown = document.getElementById("countdown");
+            const progressBar = document.getElementById("progress-bar");
+            let intervalo;
+            function iniciarContagem() {
+                const minutosAleatorios = Math.floor(Math.random() * 20) + 2;
+                const duracaoTotal = minutosAleatorios * 60 * 1000;
+                const dataInicio = new Date().getTime();
+                const dataFinal = dataInicio + duracaoTotal;
+                clearInterval(intervalo);
+                intervalo = setInterval(() => {
+                    const agora = new Date().getTime();
+                    const tempoRestante = dataFinal - agora;
+                    if (tempoRestante <= 0) {
+                        clearInterval(intervalo);
+                        countdown.innerHTML = "Tempo esgotado!";
+                        progressBar.style.width = "0%";
+                        setTimeout(() => {
+                            progressBar.style.width = "100%";
+                            iniciarContagem();
+                        }, 2000);
+                        return;
+                    }
+                    const minutos = Math.floor((tempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+                    const segundos = Math.floor((tempoRestante % (1000 * 60)) / 1000);
+                    countdown.innerHTML = `${minutos}m ${segundos}s`;
+                    const progresso = (tempoRestante / duracaoTotal) * 100;
+                    progressBar.style.width = `${progresso}%`;
+                }, 1000);
+            }
+            iniciarContagem();
+        </script>
+    </div>
+
+    <marquee SCROLLAMOUNT=15>🔥 Gere seu teste IPTV grátis agora e aproveite +40.000 conteúdos em 📺 CANAIS, 🎬 FILMES E 🍿 SÉRIES! Garanta seu login na promoção de hoje com melhor preço do Brasil 🔥</marquee>
+
+    <div class="background"></div>
+
+    <div style="margin-top: 20px;"></div>
+
+    <div class="container">
+        <!--    <button class="btn-compact" onclick="window.open('https://api.whatsapp.com/send/?phone=5553984740026', '_blank')">🍿 Teste IPTV por whatsapp</button> -->
+        
+    <!--  <button class="btn-compact" onclick="document.getElementById('popup8').style.display='block'"><span>🍿 Teste IPTV 24h</span></button> -->
+        
+       <button class="btn-compact" onclick="window.open('http://painel.iptvperfeito.com/enqzva', '_blank')"><span>🍿 Teste de IPTV 24h</span></button> 
+        <button class="btn-compact" onclick="window.open('http://teste.cstvshow.com/cadtest.php?r=VjFaa1UyUkhSbGhPUkRBOQ==', '_blank')"><span>📺 Teste de CS 48h</span></button>
+        <button class="btn-compact btn-piscante" onclick="window.open('https://api.whatsapp.com/send/?phone=5513981320512', '_blank')"><span>🔥 Um Ano por R$ 69,90</span></button>
+        <button class="btn-compact" onclick="window.open('https://api.whatsapp.com/send/?phone=5513981320512', '_blank')"><span>🔥 6 meses IPTV R$ 39,90</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup4').style.display='block'"><span>🔶 Planos e Preços</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup1').style.display='block'"><span>🔶 Comprar/Renovar</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>🤑 Pix para pagamento</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup3').style.display='block'"><span>🟢 Painel do Cliente</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup7').style.display='block'"><span>🟢 Baixar Aplicativo Android</span></button>
+        <button class="btn-compact" onclick="window.open('https://t.me/perfeitotv', '_blank')"><span>🟠 Atualizações e Avisos</span></button>
+        <button class="btn-compact" onclick="window.open('http://player.iptvperfeito.com/index.php?page=login', '_blank')"><span>📺 WEB Player</span></button>
+        <button class="btn-compact" onclick="document.getElementById('popup10').style.display='block'"><span>👨 Falar com atendente</span></button>
+    </div>
+
+    <!-- POPUPS COM EMOJIS RESTAURADOS -->
+    <div id="popup4" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup4').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h2>Escolha opção desejada</h2>
+                    <hr>
+                    <button class="btn-compact" onclick="document.getElementById('popup').style.display='block'"><span>Planos e Preços IPTV</span></button>
+                    <button class="btn-compact" onclick="document.getElementById('popup2').style.display='block'"><span>Planos e Preços CS</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h2>Um ano<br><small>(Promoção) + Vendido</small></h2>
+                    <hr>
+                    <p>Completo</p>
+                    <p>+30 Mil conteúdos</p>
+                    <p class="planos">Canais, Filmes e Séries</p>
+                    <p>Qualidade HD e FHD</p>
+                    <p>Ativação Imediata</p>
+                    <hr>
+                    <div class="planos">
+                        <p>1 TELA: R$ 69,90</p>
+                        <p>2 TELAS: R$ 129,90</p>
+                        <p>3 TELAS: R$ 199,90</p>
+                    </div>
+                    <hr>
+                    * Planos com 2 ou 3 telas permitem conexões simultâneas.<br>
+                    * Aceitamos pagamento via PIX.
+                    <hr>
+                    <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>Comprar Este</span></button>
+                </div>
+                <div class="plano">
+                    <h2>6 Meses <br><small>(Promoção)</small></h2>
+                    <hr>
+                    <p>Completo</p>
+                    <p>+30 Mil conteúdos</p>
+                    <p class="planos">Canais, Filmes e Séries</p>
+                    <p>Qualidade HD e FHD</p>
+                    <p>Ativação Imediata</p>
+                    <hr>
+                    <div class="planos">
+                        <p>1 TELA: R$ 39,90</p>
+                        <p>2 TELAS: R$ 69,90</p>
+                        <p>3 TELAS: R$ 99,90</p>
+                    </div>
+                    <hr>
+                    * Planos com 2 ou 3 telas permitem conexões simultâneas.<br>
+                    * Aceitamos pagamento via PIX.
+                    <hr>
+                    <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>Comprar Este</span></button>
+                </div>
+                <div class="plano">
+                    <h2>30 Dias</h2>
+                    <hr>
+                    <p>Completo</p>
+                    <p>+30 Mil conteúdos</p>
+                    <p class="planos">Canais, Filmes e Séries</p>
+                    <p>Qualidade HD e FHD</p>
+                    <p>Ativação Imediata</p>
+                    <hr>
+                    <div class="planos">
+                        <p>1 TELA: R$ 25,00</p>
+                        <p>2 TELAS: R$ 40,00</p>
+                        <p>3 TELAS: R$ 55,00</p>
+                    </div>
+                    <hr>
+                    * Planos com 2 ou 3 telas permitem conexões simultâneas.<br>
+                    * Aceitamos pagamento via PIX.
+                    <hr>
+                    <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>Comprar Este</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Todos os outros popups seguem o mesmo padrão com <span> e emojis -->
+    <!-- (popup1, popup2, popup3, popup5, popup7, popup8, popup10) -->
+
+    <div id="popup1" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup1').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h2>Escolha opção desejada</h2>
+                    <hr>
+                    <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>Comprar/Renovar IPTV</span></button>
+                    <button class="btn-compact" onclick="document.getElementById('popup5').style.display='block'"><span>Comprar/Renovar CS</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup3" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup3').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h2>Escolha opção desejada</h2>
+                    <hr>
+                    <button class="btn-compact" onclick="window.open('https://painel.iptvperfeito.com/', '_blank')"><span>Painel do Cliente IPTV</span></button>
+                    <button class="btn-compact" onclick="window.open('https://teste.cstvshow.com', '_blank')"><span>Painel do Cliente CS</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup5" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup5').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h2>PIX para pagamento</h2>
+                    <p>Segue abaixo PIX EMAIL para pagamento</p>
+                    <hr>
+                    <p>PIX ( E-MAIL )<br>Em nome de: Jhenefher<br>pagamentotv2026@gmail.com</p>
+                    <hr>
+                    <p>ATENÇÃO! Após pagamento envie seu comprovante através do botão abaixo</p>
+                    <hr>
+                    <button class="btn-compact" onclick="window.open('https://api.whatsapp.com/send/?phone=5513981320512', '_blank')"><span>Informar Pagamento</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup7" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup7').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <h3>APP Oficial<br><hr>
+                    <small>Aplicativo Exclusivo para aparelhos ANDROID: TVBOX, SmarTV, SmartPhone e FireStick</small></h3>
+                    <a href="https://iptvperfeito.com/app.apk" class="btn-compact"><span>Baixar App User v4.1</span></a>
+                    <h5>Link APP: https://iptvperfeito.com/app.apk</h5>
+                    <hr>
+                    <h5>Após baixar o aplicativo, permita instalação de fontes desconhecidas!</h5>
+                    <h5>Baixe diretamente no dispositivo que vai usar!</h5>
+                    <h5>Entre com usuário e senha do teste ou compra.</h5>
+                    <hr>
+                    <a href="https://iptvperfeito.com/menu" class="btn-compact"><span>Teste IPTV</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup8" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup8').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <p>Envio de teste somente por E-MAIL</p>
+                    <hr>
+                    <button class="btn-compact" onclick="window.open('http://painel.iptvperfeito.com/enqzva', '_blank')"><span>Teste IPTV por E-MAIL</span></button> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup10" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('popup10').style.display='none'">×</span>
+            <br>
+            <div class="tabela">
+                <div class="plano">
+                    <p>Informe o que deseja abaixo!</p>
+                    <p>ATENÇÃO: Não enviamos teste no atendimento!</p>
+                    <hr>
+                   <button class="btn-compact" onclick="window.open('http://painel.iptvperfeito.com/enqzva', '_blank')"><span>Quero TESTE GRATIS</span></button> 
+                    <button class="btn-compact" onclick="window.open('https://api.whatsapp.com/send/?phone=5513981320512', '_blank')"><span>Falar com atendente</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zendesk -->
+    <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=5ae00b77-ee72-4c98-af0f-0b4678d4f5cb"></script>
+</body>
+</html>
